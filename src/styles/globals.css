@@ -5,10 +5,6 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-* {
-  @apply border-border;
-}
-
 body {
   @apply bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900;
   @apply text-slate-900 dark:text-slate-100;
