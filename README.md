@@ -1,29 +1,230 @@
-# Create T3 App
+# Shortform — Minimal Short-Form Video Prototype
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Overview
+A minimal short-form video web app built with Next.js, tRPC, Prisma, and Tailwind. Supports user auth, video upload (S3 or local), feed playback, and likes.
 
-## What's next? How do I make an app with this?
+## Features
+- Sign up / Login with credentials
+- Video upload (S3 presigned or local fallback)
+- Feed with autoplay muted videos
+- Like / Unlike with transactional updates
+- Responsive UI with Tailwind CSS
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Tech Stack
+- **Next.js** (App Router) - React framework
+- **TypeScript** - Type safety
+- **tRPC** - End-to-end typesafe APIs
+- **Prisma** - ORM for database
+- **PostgreSQL** - Database (or MySQL)
+- **Tailwind CSS** - Styling
+- **NextAuth** - Authentication
+- **AWS S3 SDK** - Optional video storage
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Quick Start
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### 1. Clone and Install
 
-## Learn More
+```bash
+git clone <repo> && cd <repo>
+npm install
+```
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### 2. Environment Setup
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+Create a `.env` file in the root directory:
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+```env
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/shortform
 
-## How do I deploy this?
+# NextAuth
+AUTH_SECRET=super-secret-change-in-production
+AUTH_DISCORD_ID=
+AUTH_DISCORD_SECRET=
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+# AWS S3 (optional - app will use local uploads if not set)
+AWS_REGION=us-east-1
+S3_BUCKET=my-bucket
+AWS_ACCESS_KEY_ID=AKIA...
+AWS_SECRET_ACCESS_KEY=...
+
+# Node Environment
+NODE_ENV=development
+```
+
+**Note:** If you don't have AWS credentials, the app will automatically use local file storage in `public/uploads/`.
+
+### 3. Database Setup
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Run migrations
+npx prisma migrate dev --name init
+
+# (Optional) Open Prisma Studio to view data
+npx prisma studio
+```
+
+### 4. Run Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+```
+/src
+  /app
+    /api
+      /trpc/[trpc]/route.ts
+      /upload
+        /presign/route.ts
+        /local/route.ts
+    /auth/page.tsx
+    /feed/page.tsx
+    /upload/page.tsx
+    layout.tsx
+    page.tsx
+  /components
+    AuthForm.tsx
+    UploadForm.tsx
+    Feed.tsx
+    VideoCard.tsx
+    Navbar.tsx
+    SessionProvider.tsx
+  /server
+    /api
+      /routers
+        auth.ts
+        video.ts
+      root.ts
+      trpc.ts
+    /auth
+      config.ts
+      index.ts
+    db.ts
+/prisma
+  schema.prisma
+```
+
+## Database Schema
+
+The app uses three main models:
+
+- **User**: User accounts with email/password auth
+- **Video**: Video metadata (title, description, URL, likeCount)
+- **Like**: User-video like relationships
+
+See `prisma/schema.prisma` for the complete schema.
+
+## API Endpoints
+
+### tRPC Routers
+
+#### Auth Router (`auth`)
+- `register({ name, email, password })` - Create new user
+- `login({ email, password })` - Authenticate user
+- `me()` - Get current user (protected)
+
+#### Video Router (`video`)
+- `createMetadata({ url, title?, description?, duration?, thumbnail? })` - Create video record (protected)
+- `feed({ cursor?, limit? })` - Get paginated video feed
+- `like({ videoId })` - Like a video (protected)
+- `unlike({ videoId })` - Unlike a video (protected)
+- `userLikes({ userId? })` - Get user's liked videos (protected)
+
+### REST API Routes
+
+- `POST /api/upload/presign` - Get S3 presigned URL or local upload key
+- `POST /api/upload/local` - Upload file to local storage
+
+## Upload Flow
+
+1. User selects video file
+2. Client calls `/api/upload/presign` with filename and content type
+3. Server returns:
+   - **S3 mode**: Presigned URL and final public URL
+   - **Local mode**: Upload key and final `/uploads/...` path
+4. Client uploads file:
+   - **S3**: PUT directly to presigned URL
+   - **Local**: POST form data to `/api/upload/local`
+5. On success, client calls `video.createMetadata` with final URL
+6. Video appears in feed
+
+## Features in Detail
+
+### Video Feed
+- Infinite scroll pagination
+- Autoplay muted videos when 50% visible (IntersectionObserver)
+- Pause other videos when scrolling
+- Shows user info, timestamp, like count
+
+### Likes
+- Optimistic UI updates
+- Transactional database updates (likeCount stays consistent)
+- Requires authentication
+
+### Authentication
+- Credentials-based auth with bcrypt password hashing
+- NextAuth session management
+- Protected routes redirect to `/auth` if not logged in
+
+## Development
+
+```bash
+# Type checking
+npm run typecheck
+
+# Linting
+npm run lint
+
+# Format code
+npm run format:write
+
+# Database
+npm run db:studio  # Open Prisma Studio
+npm run db:push    # Push schema changes (dev)
+```
+
+## Demo Script (2 minutes)
+
+1. **0–10s**: Intro - "Shortform, a minimal short-form video app built with Next.js, tRPC, Prisma, and Tailwind"
+2. **10–30s**: Show sign up / login flow - create account, sign in
+3. **30–55s**: Upload a short MP4 - show file selection, upload progress, explain presign → upload → createMetadata flow
+4. **55–85s**: Show feed - autoplay behavior, like/unlike, show database changes (Prisma Studio)
+5. **85–110s**: Show key code files - `prisma/schema.prisma`, `server/api/routers/video.ts`, `components/UploadForm.tsx`
+6. **110–120s**: Wrap up - repo link, how to run locally
+
+## Notes
+
+- File size limit: 20MB (enforced client and server)
+- Content type validation: Only `video/*` files accepted
+- Local uploads stored in `public/uploads/` (create directory if needed)
+- S3 uploads require proper bucket permissions (public-read ACL)
+
+## Troubleshooting
+
+**Database connection errors:**
+- Ensure PostgreSQL is running
+- Check `DATABASE_URL` in `.env`
+- Run `npx prisma migrate dev` to set up schema
+
+**Upload fails:**
+- Check file size (< 20MB)
+- Verify file is video format
+- For S3: check AWS credentials and bucket permissions
+- For local: ensure `public/uploads/` directory exists and is writable
+
+**Auth not working:**
+- Ensure `AUTH_SECRET` is set in `.env`
+- Check that user exists in database
+- Verify password hashing (bcrypt)
+
+## License
+
+MIT

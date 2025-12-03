@@ -27,6 +27,35 @@ model Post {
   @@index([name])
 }
 
+model Video {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  url         String // final accessible URL (S3 or /uploads/...)
+  thumbnail   String?
+  duration    Int? // seconds
+  createdAt   DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes       Like[]
+  likeCount   Int      @default(0)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  videoId   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+  @@index([videoId])
+}
+
 // Necessary for Next auth
 model Account {
   id                       String  @id @default(cuid())
@@ -58,12 +87,16 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
+  password      String? // for credentials auth
+  createdAt     DateTime  @default(now())
   accounts      Account[]
   sessions      Session[]
   posts         Post[]
+  videos        Video[]
+  likes         Like[]
 }
 
 model VerificationToken {
