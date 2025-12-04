@@ -126,6 +126,8 @@ The application follows a **full-stack TypeScript architecture** with clear sepa
 7. Video appears in feed
 ```
 
+![Video Upload and Processing Flow](./public/Video Upload and Processing Flow.png)
+
 #### Authentication Flow
 ```
 1. User submits credentials
@@ -140,6 +142,8 @@ The application follows a **full-stack TypeScript architecture** with clear sepa
    ↓
 6. Protected routes can access session.user
 ```
+
+![Authentication and Session Flow](./public/Authentication and Session Flow.png)
 
 #### Video Feed Flow
 ```
@@ -157,6 +161,8 @@ The application follows a **full-stack TypeScript architecture** with clear sepa
    ↓
 7. IntersectionObserver triggers autoplay
 ```
+
+![Video Feed Flow](./public/Selection.png)
 
 ### Key Design Patterns
 
