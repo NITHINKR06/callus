@@ -41,12 +41,9 @@ The application follows a **full-stack TypeScript architecture** with clear sepa
 
 **Architecture Overview Video:**
 
-<video controls width="100%">
-  <source src="/SA.mkv" type="video/x-matroska">
-  Your browser does not support the video tag.
-</video>
+For a detailed visual walkthrough of the architecture, see: [Architecture Video](./public/SA.mkv)
 
-For a detailed visual walkthrough of the architecture, see: [Architecture Video](/SA.mkv)
+> **Note:** The video file is located in the `public` folder. When viewing locally, you can access it at `/SA.mkv`. On GitHub, click the link above to download or view the video.
 
 ### Application Layers
 
@@ -79,7 +76,7 @@ For a detailed visual walkthrough of the architecture, see: [Architecture Video]
 
 #### Video Upload Flow
 
-![Video Upload and Processing Flow](/Video%20Upload%20and%20Processing%20Flow.png)
+![Video Upload and Processing Flow](./public/Video%20Upload%20and%20Processing%20Flow.png)
 
 **Process Steps:**
 1. User selects video file
@@ -92,7 +89,7 @@ For a detailed visual walkthrough of the architecture, see: [Architecture Video]
 
 #### Authentication Flow
 
-![Authentication and Session Flow](/Authentication%20and%20Session%20Flow.png)
+![Authentication and Session Flow](./public/Authentication%20and%20Session%20Flow.png)
 
 **Process Steps:**
 1. User submits credentials
@@ -104,7 +101,7 @@ For a detailed visual walkthrough of the architecture, see: [Architecture Video]
 
 #### Video Feed Flow
 
-![Video Feed Flow](/Selection.png)
+![Video Feed Flow](./public/Selection.png)
 
 **Process Steps:**
 1. User navigates to `/feed`
