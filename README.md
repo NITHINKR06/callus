@@ -156,8 +156,6 @@ See `prisma/schema.prisma` for the complete schema.
 5. On success, client calls `video.createMetadata` with final URL
 6. Video appears in feed
 
-![Video Upload and Processing Flow](./public/Video Upload and Processing Flow.png)
-
 ## Features in Detail
 
 ### Video Feed
@@ -165,8 +163,6 @@ See `prisma/schema.prisma` for the complete schema.
 - Autoplay muted videos when 50% visible (IntersectionObserver)
 - Pause other videos when scrolling
 - Shows user info, timestamp, like count
-
-![Video Feed Flow](./public/Selection.png)
 
 ### Likes
 - Optimistic UI updates
@@ -177,8 +173,6 @@ See `prisma/schema.prisma` for the complete schema.
 - Credentials-based auth with bcrypt password hashing
 - NextAuth session management
 - Protected routes redirect to `/auth` if not logged in
-
-![Authentication and Session Flow](./public/Authentication and Session Flow.png)
 
 ## Development
 

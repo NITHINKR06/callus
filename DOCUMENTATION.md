@@ -37,48 +37,16 @@
 
 ### High-Level Architecture
 
-The application follows a **full-stack TypeScript architecture** with clear separation between client and server:
+The application follows a **full-stack TypeScript architecture** with clear separation between client and server.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        Client Layer                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │   React      │  │  Next.js     │  │  TanStack   │       │
-│  │  Components  │  │  App Router  │  │   Query     │       │
-│  └──────────────┘  └──────────────┘  └──────────────┘       │
-│           │                │                │                 │
-│           └────────────────┼────────────────┘                │
-│                            │                                  │
-│                    ┌───────▼────────┐                         │
-│                    │   tRPC Client  │                         │
-│                    └───────┬────────┘                         │
-└────────────────────────────┼──────────────────────────────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  Next.js API    │
-                    │     Routes      │
-                    └────────┬────────┘
-                             │
-┌────────────────────────────┼──────────────────────────────────┐
-│                    Server Layer                                │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │   tRPC       │  │  NextAuth    │  │   Prisma     │       │
-│  │  Routers     │  │   Auth       │  │    ORM       │       │
-│  └──────────────┘  └──────────────┘  └──────────────┘       │
-│           │                │                │                 │
-│           └────────────────┼────────────────┘                │
-│                            │                                  │
-│                    ┌───────▼────────┐                         │
-│                    │  PostgreSQL    │                         │
-│                    │   Database     │                         │
-│                    └────────────────┘                         │
-└───────────────────────────────────────────────────────────────┘
-                             │
-                    ┌────────▼────────┐
-                    │   AWS S3 /      │
-                    │  Local Storage  │
-                    └─────────────────┘
-```
+**Architecture Overview Video:**
+
+<video controls width="100%">
+  <source src="/SA.mkv" type="video/x-matroska">
+  Your browser does not support the video tag.
+</video>
+
+For a detailed visual walkthrough of the architecture, see: [Architecture Video](/SA.mkv)
 
 ### Application Layers
 
@@ -110,59 +78,42 @@ The application follows a **full-stack TypeScript architecture** with clear sepa
 ### Data Flow Examples
 
 #### Video Upload Flow
-```
-1. User selects video file
-   ↓
-2. Client calls /api/upload/presign
-   ↓
-3. Server generates presigned URL (S3) or upload key (local)
-   ↓
-4. Client uploads file directly to S3 or POSTs to /api/upload/local
-   ↓
-5. Client calls video.createMetadata tRPC mutation
-   ↓
-6. Server creates Video record in database
-   ↓
-7. Video appears in feed
-```
 
-![Video Upload and Processing Flow](./public/Video Upload and Processing Flow.png)
+![Video Upload and Processing Flow](/Video%20Upload%20and%20Processing%20Flow.png)
+
+**Process Steps:**
+1. User selects video file
+2. Client calls `/api/upload/presign`
+3. Server generates presigned URL (S3) or upload key (local)
+4. Client uploads file directly to S3 or POSTs to `/api/upload/local`
+5. Client calls `video.createMetadata` tRPC mutation
+6. Server creates Video record in database
+7. Video appears in feed
 
 #### Authentication Flow
-```
-1. User submits credentials
-   ↓
-2. Client calls auth.login tRPC mutation
-   ↓
-3. Server validates credentials with bcrypt
-   ↓
-4. NextAuth creates JWT session
-   ↓
-5. Session stored in cookies
-   ↓
-6. Protected routes can access session.user
-```
 
-![Authentication and Session Flow](./public/Authentication and Session Flow.png)
+![Authentication and Session Flow](/Authentication%20and%20Session%20Flow.png)
+
+**Process Steps:**
+1. User submits credentials
+2. Client calls `auth.login` tRPC mutation
+3. Server validates credentials with bcrypt
+4. NextAuth creates JWT session
+5. Session stored in cookies
+6. Protected routes can access `session.user`
 
 #### Video Feed Flow
-```
-1. User navigates to /feed
-   ↓
-2. Client calls video.feed tRPC query
-   ↓
-3. Server queries database with pagination
-   ↓
-4. Server checks like status for authenticated users
-   ↓
-5. Returns videos with metadata
-   ↓
-6. Client renders VideoCard components
-   ↓
-7. IntersectionObserver triggers autoplay
-```
 
-![Video Feed Flow](./public/Selection.png)
+![Video Feed Flow](/Selection.png)
+
+**Process Steps:**
+1. User navigates to `/feed`
+2. Client calls `video.feed` tRPC query
+3. Server queries database with pagination
+4. Server checks like status for authenticated users
+5. Returns videos with metadata
+6. Client renders VideoCard components
+7. IntersectionObserver triggers autoplay
 
 ### Key Design Patterns
 
