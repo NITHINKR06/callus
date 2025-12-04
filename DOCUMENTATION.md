@@ -41,9 +41,15 @@ The application follows a **full-stack TypeScript architecture** with clear sepa
 
 **Architecture Overview Video:**
 
-For a detailed visual walkthrough of the architecture, see: [Architecture Video](./public/SA.mkv)
+**📹 [View Architecture Video](./public/SA.mkv)** (Click to play in browser)
 
-> **Note:** The video file is located in the `public` folder. When viewing locally, you can access it at `/SA.mkv`. On GitHub, click the link above to download or view the video.
+> **Note:** 
+> - **On GitHub:** Click the link above to open the video directly in your browser. GitHub serves the raw file, and modern browsers can play `.mkv` videos if they have the necessary codec support.
+> - **Locally:** When running the Next.js app, access the video at `http://localhost:3000/SA.mkv`
+> - **Browser Compatibility:** If your browser doesn't support `.mkv` playback, you can:
+>   - Download the video and play it with VLC or another media player
+>   - Convert the video to `.mp4` format for universal browser support
+>   - Use GitHub's raw file URL: `https://raw.githubusercontent.com/NITHINKR06/intapp/main/public/SA.mkv`
 
 ### Application Layers
 
